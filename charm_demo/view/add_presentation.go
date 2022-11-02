@@ -31,6 +31,10 @@ func AddPresentationUpdate(m Model, msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.PresentationInputFocus = currentFocus - 1
 
 			return m, nil
+		} else if msg.Type == tea.KeyEscape || msg.Type == tea.KeyEsc {
+			m.CurrentView = PRESENTATION_LIST
+
+			return m, nil
 		} else if msg.String() == "ctrl+j" { // Ctrl + Enter reads as ctrl+j for some reason
 			rating, _ := strconv.Atoi(m.PresentationRatingInput.Value())
 			// Save new presentation

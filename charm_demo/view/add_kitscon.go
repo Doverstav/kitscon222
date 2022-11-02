@@ -21,6 +21,10 @@ func AddKitsconUpdate(m Model, msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.KitsconTitleInput.Focus()
 
 			return m, nil
+		} else if msg.Type == tea.KeyEscape || msg.Type == tea.KeyEsc {
+			m.CurrentView = KITSCON_LIST
+
+			return m, nil
 		} else if msg.String() == "ctrl+j" { // Ctrl + Enter reads as ctrl+j for some reason
 			return m, commands.SaveKitscon(m.DB, m.KitsconTitleInput.Value(), m.KitsconDescriptionInput.Value())
 		}
