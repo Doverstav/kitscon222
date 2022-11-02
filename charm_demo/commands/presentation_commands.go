@@ -89,6 +89,49 @@ func SavePresentation(db *badger.DB, kitsconId uuid.UUID, title string, presente
 	}
 }
 
+func RemovePresentation(db *badger.DB, kitsconId uuid.UUID, presentationToRemove uuid.UUID) tea.Cmd {
+	return func() tea.Msg {
+		// Remove presentation
+		err := database.DeleteItem(db, presentationToRemove.String())
+		if err != nil {
+			fmt.Printf("Error when deleting presentation %s: %v", presentationToRemove.String(), err)
+			return PresentationRemovedMsg(false)
+		}
+
+		// Get parent KitsCon, remove presentation from it
+		var kitscon Kitscon
+		err = database.GetItem(db, kitsconId.String(), &kitscon)
+		if err != nil {
+			fmt.Printf("Failed to fetch kitscon %s: %v", kitsconId.String(), err)
+			return PresentationRemovedMsg(false)
+		}
+
+		// Filter presentation ids
+		filteredPresentationIds := []uuid.UUID{}
+		for _, presentationId := range kitscon.PresentationIds {
+			if presentationId != presentationToRemove {
+				filteredPresentationIds = append(filteredPresentationIds, presentationId)
+			}
+		}
+
+		kitscon.PresentationIds = filteredPresentationIds
+		marshalled, err := json.Marshal(kitscon)
+		if err != nil {
+			fmt.Printf("Error when marshalling %v: %v", kitscon, err)
+			return PresentationRemovedMsg(false)
+		}
+
+		// Update KitsCon in database
+		err = database.SaveItem(db, kitsconId.String(), marshalled)
+		if err != nil {
+			fmt.Printf("Error when saving %v: %v", kitscon, err)
+			return PresentationRemovedMsg(false)
+		}
+
+		return PresentationRemovedMsg(true)
+	}
+}
+
 type Presentation struct {
 	Id                uuid.UUID `json:"id"`
 	PresentationTitle string    `json:"title"`
@@ -107,3 +150,5 @@ func (p Presentation) FilterValue() string { return p.Title() }
 type PresentationsMsg []Presentation
 
 type PresentationAddedMsg bool
+
+type PresentationRemovedMsg bool

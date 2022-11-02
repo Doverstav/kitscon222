@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/doverstav/kitscon222/charm_demo/commands"
 )
 
 func PresentationListUpdate(m Model, msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -16,6 +17,14 @@ func PresentationListUpdate(m Model, msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.PresentationTitleInput.Focus()
 
 			return m, nil
+		} else if msg.String() == "d" {
+			selectedItem, ok := m.ItemList.SelectedItem().(commands.Presentation)
+			if !ok {
+				fmt.Printf("Could not convert %v to Presentation", m.ItemList.SelectedItem())
+				return m, nil
+			}
+
+			return m, commands.RemovePresentation(m.DB, m.SelectedKitscon.Id, selectedItem.Id)
 		} else if msg.Type == tea.KeyEnter {
 			// Select presentation to view details
 			fmt.Print("Selected presentation")

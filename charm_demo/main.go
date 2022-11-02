@@ -14,6 +14,18 @@ import (
 	homedir "github.com/mitchellh/go-homedir"
 )
 
+/* TODO:
+- Add nicer keybinds with bubbles components
+- Add nice help message on all screen
+- Improve "rating" input to be bounded to 0 - 5 stars
+- Can models be setup in a nicer way? I.e. move
+	state/model into the corresponding view, not
+	having it all in the "main" view
+- Add some nice styling to "Add"-screens
+- Think about edit functionality
+
+*/
+
 func main() {
 	// Get app dir
 	dir, _ := homedir.Dir()
