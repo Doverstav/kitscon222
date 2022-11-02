@@ -7,6 +7,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/dgraph-io/badger/v3"
+	"github.com/doverstav/kitscon222/charm_demo/database"
 	"github.com/google/uuid"
 )
 
@@ -31,16 +32,22 @@ type KitsconAddedMsg bool
 func GetKitscons(db *badger.DB) tea.Cmd {
 	return func() tea.Msg {
 		// Get list of KitsCons
-		k, _ := getListOfKitscons(db)
-		kitsconList := make([]Kitscon, len(k.Kitscons))
+		var kitscons KitsconList
+		err := database.GetItem(db, "kitscons", &kitscons)
+		if errors.Is(err, badger.ErrKeyNotFound) {
+			kitscons.Kitscons = []uuid.UUID{}
+		}
+
+		kitsconList := make([]Kitscon, len(kitscons.Kitscons))
 		// For each uuid in list
-		for i := range k.Kitscons {
+		for i := range kitscons.Kitscons {
 			// Get actual KitsCon from database
-			kitscon, err := getKitscon(db, k.Kitscons[i])
+			var tempKitscon Kitscon
+			err := database.GetItem(db, kitscons.Kitscons[i].String(), &tempKitscon)
 			if err != nil {
-				fmt.Printf("Error getting kitscon %s: %v\n", k.Kitscons[i].String(), err)
+				fmt.Printf("Error getting kitscon %s: %v\n", kitscons.Kitscons[i].String(), err)
 			}
-			kitsconList[i] = kitscon
+			kitsconList[i] = tempKitscon
 		}
 
 		return KitsconsMsg(kitsconList)
@@ -58,15 +65,20 @@ func SaveKitscon(db *badger.DB, name string, description string) tea.Cmd {
 		}
 
 		// Save to database
-		err = saveItem(db, newKitscon.Id.String(), marshalled)
+		err = database.SaveItem(db, newKitscon.Id.String(), marshalled)
 		if err != nil {
 			fmt.Printf("Error when saving %v: %v", newKitscon, err)
 			return KitsconAddedMsg(false)
 		}
 
 		// Fetch list of KitsCons, add new kitscon to it
-		kitscons, _ := getListOfKitscons(db)
+		var kitscons KitsconList
+		err = database.GetItem(db, "kitscons", &kitscons)
+		if errors.Is(err, badger.ErrKeyNotFound) {
+			kitscons.Kitscons = []uuid.UUID{}
+		}
 		kitscons.Kitscons = append(kitscons.Kitscons, newKitscon.Id)
+
 		marshalled, err = json.Marshal(kitscons)
 		if err != nil {
 			fmt.Printf("Error when marshalling %v: %v", kitscons, err)
@@ -74,7 +86,7 @@ func SaveKitscon(db *badger.DB, name string, description string) tea.Cmd {
 		}
 
 		// Update list in database
-		err = saveItem(db, "kitscons", marshalled)
+		err = database.SaveItem(db, "kitscons", marshalled)
 		if err != nil {
 			fmt.Printf("Error when saving %v: %v", newKitscon, err)
 			return KitsconAddedMsg(false)
@@ -82,91 +94,4 @@ func SaveKitscon(db *badger.DB, name string, description string) tea.Cmd {
 
 		return KitsconAddedMsg(true)
 	}
-}
-
-// ------------- HELPERS ----------------
-func getListOfKitscons(db *badger.DB) (KitsconList, error) {
-	var kitscons KitsconList
-	err := db.View(func(txn *badger.Txn) error {
-		item, err := txn.Get([]byte("kitscons"))
-
-		if errors.Is(err, badger.ErrKeyNotFound) {
-			kitscons = KitsconList{Kitscons: []uuid.UUID{}}
-			return nil
-		}
-
-		var valCopy []byte
-		err = item.Value(func(val []byte) error {
-			valCopy = append([]byte{}, val...)
-
-			return nil
-		})
-
-		if err != nil {
-			return err
-		}
-
-		err = json.Unmarshal(valCopy, &kitscons)
-
-		if err != nil {
-			return err
-		}
-
-		return nil
-	})
-
-	if err != nil {
-		return kitscons, err
-	}
-
-	return kitscons, nil
-}
-
-func getKitscon(db *badger.DB, kitsconId uuid.UUID) (Kitscon, error) {
-	var kitscon Kitscon
-	err := db.View(func(txn *badger.Txn) error {
-		item, err := txn.Get([]byte(kitsconId.String()))
-		if err != nil {
-			return err
-		}
-
-		var valCopy []byte
-		err = item.Value(func(val []byte) error {
-			valCopy = append([]byte{}, val...)
-
-			return nil
-		})
-
-		if err != nil {
-			return err
-		}
-
-		err = json.Unmarshal(valCopy, &kitscon)
-
-		if err != nil {
-			return err
-		}
-
-		return nil
-	})
-
-	if err != nil {
-		return kitscon, err
-	}
-
-	return kitscon, nil
-}
-
-func saveItem(db *badger.DB, key string, data []byte) error {
-	err := db.Update(func(txn *badger.Txn) error {
-		e := badger.NewEntry([]byte(key), data)
-		err := txn.SetEntry(e)
-		return err
-	})
-
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
