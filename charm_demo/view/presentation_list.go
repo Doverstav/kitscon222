@@ -27,6 +27,10 @@ func PresentationListUpdate(m Model, msg tea.Msg) (tea.Model, tea.Cmd) {
 		} else if msg.Type == tea.KeyEnter {
 			// Select presentation to view details
 			fmt.Print("Selected presentation")
+			m.CurrentView = PRESENTATION
+			m.SelectedPresentation, _ = m.ItemList.SelectedItem().(commands.Presentation)
+
+			return m, nil
 		}
 	}
 

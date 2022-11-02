@@ -25,9 +25,10 @@ const (
 )
 
 type Model struct {
-	DB              *badger.DB
-	CurrentView     View
-	SelectedKitscon commands.Kitscon
+	DB                   *badger.DB
+	CurrentView          View
+	SelectedKitscon      commands.Kitscon
+	SelectedPresentation commands.Presentation
 	// Shared list (switching between two lists produced weird artifacts)
 	ItemList list.Model
 	// AddKitsconView
@@ -105,6 +106,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return PresentationListUpdate(m, msg)
 	} else if m.CurrentView == ADD_NEW_PRESENTATION {
 		return AddPresentationUpdate(m, msg)
+	} else if m.CurrentView == PRESENTATION {
+		return PresentationUpdate(m, msg)
 	}
 
 	return m, nil
@@ -119,6 +122,8 @@ func (m Model) View() string {
 		return PresentationListView(m)
 	} else if m.CurrentView == ADD_NEW_PRESENTATION {
 		return AddPresentationView(m)
+	} else if m.CurrentView == PRESENTATION {
+		return PresentationView(m)
 	}
 
 	return ""
