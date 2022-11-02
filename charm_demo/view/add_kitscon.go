@@ -6,7 +6,7 @@ import (
 	"github.com/doverstav/kitscon222/charm_demo/commands"
 )
 
-var inputStyle = lipgloss.NewStyle().Margin(1, 0)
+var inputStyle = lipgloss.NewStyle().Margin(1, 0, 0, 0)
 
 func AddKitsconUpdate(m Model, msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
@@ -36,5 +36,8 @@ func AddKitsconUpdate(m Model, msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func AddKitsconView(m Model) string {
-	return docStyle.Render(inputStyle.Render(m.KitsconTitleInput.View()) + "\n" + m.KitsconDescriptionInput.View())
+	return docStyle.Render(
+		inputStyle.Render(m.KitsconTitleInput.View()) + "\n" +
+			inputStyle.Render(m.KitsconDescriptionInput.View()),
+	)
 }

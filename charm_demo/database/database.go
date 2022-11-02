@@ -2,7 +2,6 @@ package database
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/dgraph-io/badger/v3"
 )
@@ -26,7 +25,6 @@ func GetItem(db *badger.DB, key string, toSave interface{}) error {
 			return err
 		}
 
-		fmt.Println(valCopy)
 		err = json.Unmarshal(valCopy, toSave)
 
 		if err != nil {

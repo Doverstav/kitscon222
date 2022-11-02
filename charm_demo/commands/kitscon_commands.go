@@ -91,7 +91,7 @@ func SaveKitscon(db *badger.DB, name string, description string) tea.Cmd {
 		// Update list in database
 		err = database.SaveItem(db, "kitscons", marshalled)
 		if err != nil {
-			fmt.Printf("Error when saving %v: %v", newKitscon, err)
+			fmt.Printf("Error when saving %v: %v", kitscons, err)
 			return KitsconAddedMsg(false)
 		}
 
@@ -101,7 +101,7 @@ func SaveKitscon(db *badger.DB, name string, description string) tea.Cmd {
 
 func KitsconSelected(kitscon Kitscon) tea.Cmd {
 	return func() tea.Msg {
-		fmt.Printf("Selected %v", kitscon)
+		//fmt.Printf("Selected %v", kitscon)
 		return KitsconSelectedMsg(kitscon)
 	}
 }

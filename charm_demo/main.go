@@ -30,20 +30,47 @@ func main() {
 
 	initalView := view.KITSCON_LIST
 
-	input := textinput.New()
-	input.Placeholder = "New KitsCon"
-	input.CharLimit = 156
-	input.Width = 20
+	kitsconTitleInput := textinput.New()
+	kitsconTitleInput.Placeholder = "New KitsCon"
+	kitsconTitleInput.CharLimit = 156
+	kitsconTitleInput.Width = 20
 
-	areainput := textarea.New()
-	areainput.Placeholder = "Your thought about the presentation"
+	kitsconDescInput := textarea.New()
+	kitsconDescInput.Placeholder = "KitsCon description"
+
+	presentationTitleInput := textinput.New()
+	presentationTitleInput.Placeholder = "New presentation"
+	presentationTitleInput.CharLimit = 156
+	presentationTitleInput.Width = 20
+
+	presentationPresenterInput := textinput.New()
+	presentationPresenterInput.Placeholder = "Who presented"
+	presentationPresenterInput.CharLimit = 156
+	presentationPresenterInput.Width = 20
+
+	presentationDescInput := textarea.New()
+	presentationDescInput.Placeholder = "Presentation description"
+
+	presentationRatingInput := textinput.New()
+	presentationRatingInput.Placeholder = "Your rating"
+	presentationRatingInput.CharLimit = 156
+	presentationRatingInput.Width = 20
+
+	presentationReviewInput := textarea.New()
+	presentationReviewInput.Placeholder = "Your thoughts on the presentation"
 
 	if err := tea.NewProgram(view.Model{
-		DB:                      db,
-		List:                    list.New([]list.Item{}, list.NewDefaultDelegate(), 0, 0),
-		CurrentView:             initalView,
-		KitsconTitleInput:       input,
-		KitsconDescriptionInput: areainput,
+		DB:       db,
+		ItemList: list.New([]list.Item{}, list.NewDefaultDelegate(), 0, 0),
+		//PresentationList:             list.New([]list.Item{}, list.NewDefaultDelegate(), 0, 0),
+		CurrentView:                  initalView,
+		KitsconTitleInput:            kitsconTitleInput,
+		KitsconDescriptionInput:      kitsconDescInput,
+		PresentationTitleInput:       presentationTitleInput,
+		PresentationPresenterInput:   presentationPresenterInput,
+		PresentationDescriptionInput: presentationDescInput,
+		PresentationRatingInput:      presentationRatingInput,
+		PresentationReviewInput:      presentationReviewInput,
 	}).Start(); err != nil {
 		fmt.Printf("Error: %v\n", err)
 		os.Exit(1)
