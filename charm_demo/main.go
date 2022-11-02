@@ -9,9 +9,13 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/doverstav/kitscon222/charm_demo/view"
+	homedir "github.com/mitchellh/go-homedir"
 )
 
 func main() {
+	dir, _ := homedir.Dir()
+	fmt.Println(dir)
+
 	initalView := view.KITSCON_LIST
 
 	input := textinput.New()

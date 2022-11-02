@@ -1,8 +1,6 @@
 package view
 
 import (
-	"fmt"
-
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textarea"
 	"github.com/charmbracelet/bubbles/textinput"
@@ -12,7 +10,6 @@ import (
 )
 
 var docStyle = lipgloss.NewStyle().Margin(1, 2)
-var inputStyle = lipgloss.NewStyle().Margin(1, 0)
 
 type View string
 
@@ -40,16 +37,6 @@ type Model struct {
 	TextArea    textarea.Model
 }
 
-func aMsg() tea.Msg {
-	return characterMsg("a")
-}
-
-func bMsg() tea.Msg {
-	return characterMsg("b")
-}
-
-type characterMsg string
-
 func (m Model) Init() tea.Cmd {
 	return commands.GetKitscons
 }
@@ -63,51 +50,23 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if msg.Type == tea.KeyCtrlC {
 			return m, tea.Quit
 		}
-
-		if msg.String() == "a" {
-			m.CurrentView = ADD_NEW_KITSCON
-			m.Input.Focus()
-			return m, aMsg
-		}
-
-		if msg.String() == "b" {
-			return m, bMsg
-		}
 	case commands.KitsconsMsg:
 		m.List.SetItems(KitsconMsgToListItem([]commands.Kitscon(msg)))
 		return m, nil
 	}
 
 	if m.CurrentView == ADD_NEW_KITSCON {
-		switch msg := msg.(type) {
-		case tea.KeyMsg:
-			fmt.Print("test")
-			if msg.Type == tea.KeyEnter || msg.Type == tea.KeyTab {
-				m.Input.Blur()
-				m.TextArea.Focus()
-
-				return m, nil
-			}
-		}
-
-		var fieldCmd tea.Cmd
-		m.Input, fieldCmd = m.Input.Update(msg)
-
-		var areaCmd tea.Cmd
-		m.TextArea, areaCmd = m.TextArea.Update(msg)
-
-		return m, tea.Batch(fieldCmd, areaCmd)
-	} else {
-		var cmd tea.Cmd
-		m.List, cmd = m.List.Update(msg)
-
-		return m, cmd
+		return AddKitsconUpdate(m, msg)
+	} else if m.CurrentView == KITSCON_LIST {
+		return KitsConListUpdate(m, msg)
 	}
+
+	return m, nil
 }
 
 func (m Model) View() string {
 	if m.CurrentView == ADD_NEW_KITSCON {
-		return docStyle.Render(inputStyle.Render(m.Input.View()) + "\n" + m.TextArea.View())
+		return AddKitsconView(m)
 	} else if m.CurrentView == KITSCON_LIST {
 		return KitsConListView(m)
 	}
