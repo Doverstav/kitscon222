@@ -9,7 +9,7 @@ func KitsConListUpdate(m Model, msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		if msg.String() == "a" {
 			m.CurrentView = ADD_NEW_KITSCON
-			m.Input.Focus()
+			m.KitsconTitleInput.Focus()
 			return m, nil
 		}
 	}

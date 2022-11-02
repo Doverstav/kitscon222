@@ -34,11 +34,12 @@ func (p presentationListItem) Description() string { return strings.Repeat("⭐"
 func (p presentationListItem) FilterValue() string { return p.title }
 
 type Model struct {
-	DB          *badger.DB
-	CurrentView View
-	List        list.Model
-	Input       textinput.Model
-	TextArea    textarea.Model
+	DB                      *badger.DB
+	CurrentView             View
+	List                    list.Model
+	KitsconTitleInput       textinput.Model
+	KitsconDescriptionInput textarea.Model
+	SelectedKitscon         commands.Kitscon
 }
 
 func (m Model) Init() tea.Cmd {

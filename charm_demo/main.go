@@ -39,11 +39,11 @@ func main() {
 	areainput.Placeholder = "Your thought about the presentation"
 
 	if err := tea.NewProgram(view.Model{
-		DB:          db,
-		List:        list.New([]list.Item{}, list.NewDefaultDelegate(), 0, 0),
-		CurrentView: initalView,
-		Input:       input,
-		TextArea:    areainput,
+		DB:                      db,
+		List:                    list.New([]list.Item{}, list.NewDefaultDelegate(), 0, 0),
+		CurrentView:             initalView,
+		KitsconTitleInput:       input,
+		KitsconDescriptionInput: areainput,
 	}).Start(); err != nil {
 		fmt.Printf("Error: %v\n", err)
 		os.Exit(1)

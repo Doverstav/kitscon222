@@ -12,29 +12,29 @@ func AddKitsconUpdate(m Model, msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		if msg.Type == tea.KeyTab {
-			m.Input.Blur()
-			m.TextArea.Focus()
+			m.KitsconTitleInput.Blur()
+			m.KitsconDescriptionInput.Focus()
 
 			return m, nil
 		} else if msg.Type == tea.KeyShiftTab {
-			m.TextArea.Blur()
-			m.Input.Focus()
+			m.KitsconDescriptionInput.Blur()
+			m.KitsconTitleInput.Focus()
 
 			return m, nil
 		} else if msg.String() == "ctrl+j" { // Ctrl + Enter reads as ctrl+j for some reason
-			return m, commands.SaveKitscon(m.DB, m.Input.Value(), m.TextArea.Value())
+			return m, commands.SaveKitscon(m.DB, m.KitsconTitleInput.Value(), m.KitsconDescriptionInput.Value())
 		}
 	}
 
 	var fieldCmd tea.Cmd
-	m.Input, fieldCmd = m.Input.Update(msg)
+	m.KitsconTitleInput, fieldCmd = m.KitsconTitleInput.Update(msg)
 
 	var areaCmd tea.Cmd
-	m.TextArea, areaCmd = m.TextArea.Update(msg)
+	m.KitsconDescriptionInput, areaCmd = m.KitsconDescriptionInput.Update(msg)
 
 	return m, tea.Batch(fieldCmd, areaCmd)
 }
 
 func AddKitsconView(m Model) string {
-	return docStyle.Render(inputStyle.Render(m.Input.View()) + "\n" + m.TextArea.View())
+	return docStyle.Render(inputStyle.Render(m.KitsconTitleInput.View()) + "\n" + m.KitsconDescriptionInput.View())
 }
