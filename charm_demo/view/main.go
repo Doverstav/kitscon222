@@ -68,6 +68,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case commands.KitsconAddedMsg:
 		m.CurrentView = KITSCON_LIST
 		return m, commands.GetKitscons(m.DB)
+	case commands.KitsconSelectedMsg:
+		selectedKitscon := commands.Kitscon(msg)
+		m.SelectedKitscon = selectedKitscon
+		return m, commands.GetPresentations(m.DB, selectedKitscon.PresentationIds)
 	}
 
 	if m.CurrentView == ADD_NEW_KITSCON {

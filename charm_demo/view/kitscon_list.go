@@ -2,6 +2,7 @@ package view
 
 import (
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/doverstav/kitscon222/charm_demo/commands"
 )
 
 func KitsConListUpdate(m Model, msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -11,6 +12,9 @@ func KitsConListUpdate(m Model, msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.CurrentView = ADD_NEW_KITSCON
 			m.KitsconTitleInput.Focus()
 			return m, nil
+		} else if msg.Type == tea.KeyEnter {
+			selectedKitscon, _ := m.List.SelectedItem().(commands.Kitscon)
+			return m, commands.KitsconSelected(selectedKitscon)
 		}
 	}
 	var cmd tea.Cmd

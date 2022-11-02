@@ -16,9 +16,10 @@ type KitsconList struct {
 }
 
 type Kitscon struct {
-	Id   uuid.UUID `json:"id"`
-	Name string    `json:"name"`
-	Desc string    `json:"desc"`
+	Id              uuid.UUID   `json:"id"`
+	Name            string      `json:"name"`
+	Desc            string      `json:"desc"`
+	PresentationIds []uuid.UUID `json:"presentationIds"`
 }
 
 func (k Kitscon) Title() string       { return k.Name }
@@ -26,6 +27,8 @@ func (k Kitscon) Description() string { return k.Desc }
 func (k Kitscon) FilterValue() string { return k.Name }
 
 type KitsconsMsg []Kitscon
+
+type KitsconSelectedMsg Kitscon
 
 type KitsconAddedMsg bool
 
@@ -93,5 +96,12 @@ func SaveKitscon(db *badger.DB, name string, description string) tea.Cmd {
 		}
 
 		return KitsconAddedMsg(true)
+	}
+}
+
+func KitsconSelected(kitscon Kitscon) tea.Cmd {
+	return func() tea.Msg {
+		fmt.Printf("Selected %v", kitscon)
+		return KitsconSelectedMsg(kitscon)
 	}
 }
