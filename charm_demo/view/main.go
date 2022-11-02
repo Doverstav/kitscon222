@@ -76,11 +76,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case commands.KitsconAddedMsg:
 		m.CurrentView = KITSCON_LIST
 		return m, commands.GetKitscons(m.DB)
+	case commands.KitsconRemovedMsg:
+		return m, commands.GetKitscons(m.DB)
 	case commands.PresentationAddedMsg:
 		m.CurrentView = PRESENTATION_LIST
 		return m, commands.GetPresentations(m.DB, m.SelectedKitscon.Id)
 	case commands.PresentationRemovedMsg:
-		fmt.Print("Removed presentation")
 		return m, commands.GetPresentations(m.DB, m.SelectedKitscon.Id)
 	case commands.KitsconSelectedMsg:
 		selectedKitscon := commands.Kitscon(msg)

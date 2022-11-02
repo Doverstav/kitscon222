@@ -32,6 +32,8 @@ type KitsconSelectedMsg Kitscon
 
 type KitsconAddedMsg bool
 
+type KitsconRemovedMsg bool
+
 func GetKitscons(db *badger.DB) tea.Cmd {
 	return func() tea.Msg {
 		// Get list of KitsCons
@@ -96,6 +98,47 @@ func SaveKitscon(db *badger.DB, name string, description string) tea.Cmd {
 		}
 
 		return KitsconAddedMsg(true)
+	}
+}
+
+func DeleteKitscon(db *badger.DB, kitsconToRemove uuid.UUID) tea.Cmd {
+	return func() tea.Msg {
+		err := database.DeleteItem(db, kitsconToRemove.String())
+		if err != nil {
+			fmt.Printf("Could not delete kitscon %s: %v", kitsconToRemove.String(), err)
+			return KitsconRemovedMsg(false)
+		}
+
+		// Get list of KitsCons
+		var kitscons KitsconList
+		err = database.GetItem(db, "kitscons", &kitscons)
+		if errors.Is(err, badger.ErrKeyNotFound) {
+			kitscons.Kitscons = []uuid.UUID{}
+		}
+
+		// Remove deleted kitscon from it
+		filteredKitscons := []uuid.UUID{}
+		for _, kitsconId := range kitscons.Kitscons {
+			if kitsconId != kitsconToRemove {
+				filteredKitscons = append(filteredKitscons, kitsconId)
+			}
+		}
+		kitscons.Kitscons = filteredKitscons
+
+		marshalled, err := json.Marshal(kitscons)
+		if err != nil {
+			fmt.Printf("Error when marshalling %v: %v", kitscons, err)
+			return KitsconRemovedMsg(false)
+		}
+
+		// Update list in database
+		err = database.SaveItem(db, "kitscons", marshalled)
+		if err != nil {
+			fmt.Printf("Error when saving %v: %v", kitscons, err)
+			return KitsconRemovedMsg(false)
+		}
+
+		return KitsconRemovedMsg(true)
 	}
 }
 

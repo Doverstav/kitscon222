@@ -12,6 +12,9 @@ func KitsConListUpdate(m Model, msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.CurrentView = ADD_NEW_KITSCON
 			m.KitsconTitleInput.Focus()
 			return m, nil
+		} else if msg.String() == "d" {
+			selectedKitscon, _ := m.ItemList.SelectedItem().(commands.Kitscon)
+			return m, commands.DeleteKitscon(m.DB, selectedKitscon.Id)
 		} else if msg.Type == tea.KeyEnter {
 			selectedKitscon, _ := m.ItemList.SelectedItem().(commands.Kitscon)
 			return m, commands.KitsconSelected(selectedKitscon)
