@@ -8,6 +8,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/dgraph-io/badger/v3"
 	"github.com/doverstav/kitscon222/charm_demo/commands"
 )
 
@@ -42,6 +43,7 @@ func (p presentationListItem) Description() string { return strings.Repeat("⭐"
 func (p presentationListItem) FilterValue() string { return p.title }
 
 type Model struct {
+	DB          *badger.DB
 	CurrentView View
 	List        list.Model
 	Input       textinput.Model
@@ -49,7 +51,7 @@ type Model struct {
 }
 
 func (m Model) Init() tea.Cmd {
-	return commands.GetKitscons
+	return commands.GetKitscons(m.DB)
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {

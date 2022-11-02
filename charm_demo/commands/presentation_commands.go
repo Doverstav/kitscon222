@@ -1,8 +1,11 @@
 package commands
 
-import tea "github.com/charmbracelet/bubbletea"
+import (
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/dgraph-io/badger/v3"
+)
 
-func GetPresentations(kitsconId string) tea.Cmd {
+func GetPresentations(db *badger.DB, kitsconId string) tea.Cmd {
 	return func() tea.Msg {
 		presentationList := []Presentation{
 			{Id: "1", Title: "Hello", Presenter: "World", Rating: 4, Review: "Short and sweet"},
