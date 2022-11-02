@@ -1,6 +1,8 @@
 package view
 
 import (
+	"strings"
+
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textarea"
 	"github.com/charmbracelet/bubbles/textinput"
@@ -30,6 +32,15 @@ func (k kitsconListItem) Title() string       { return k.title }
 func (k kitsconListItem) Description() string { return k.description }
 func (k kitsconListItem) FilterValue() string { return k.title }
 
+type presentationListItem struct {
+	title  string
+	rating int
+}
+
+func (p presentationListItem) Title() string       { return p.title }
+func (p presentationListItem) Description() string { return strings.Repeat("⭐", p.rating) }
+func (p presentationListItem) FilterValue() string { return p.title }
+
 type Model struct {
 	CurrentView View
 	List        list.Model
@@ -53,6 +64,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case commands.KitsconsMsg:
 		m.List.SetItems(KitsconMsgToListItem([]commands.Kitscon(msg)))
 		return m, nil
+	case commands.PresentationsMsg:
+		m.List.SetItems(PresentationMsgToListItem([]commands.Presentation(msg)))
 	}
 
 	if m.CurrentView == ADD_NEW_KITSCON {
@@ -80,6 +93,16 @@ func KitsconMsgToListItem(kitscons []commands.Kitscon) []list.Item {
 
 	for _, kitscon := range kitscons {
 		listItems = append(listItems, kitsconListItem{title: kitscon.Name, description: kitscon.Description})
+	}
+
+	return listItems
+}
+
+func PresentationMsgToListItem(presentations []commands.Presentation) []list.Item {
+	listItems := []list.Item{}
+
+	for _, presentation := range presentations {
+		listItems = append(listItems, presentationListItem{title: presentation.Title, rating: presentation.Rating})
 	}
 
 	return listItems

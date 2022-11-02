@@ -5,8 +5,8 @@ import tea "github.com/charmbracelet/bubbletea"
 func GetPresentations(kitsconId string) tea.Cmd {
 	return func() tea.Msg {
 		presentationList := []Presentation{
-			{id: "1", title: "Hello", presenter: "World", rating: 4, review: "Short and sweet"},
-			{id: "2", title: "Goodbye", presenter: "World", rating: 2, review: "Long and dull"},
+			{Id: "1", Title: "Hello", Presenter: "World", Rating: 4, Review: "Short and sweet"},
+			{Id: "2", Title: "Goodbye", Presenter: "World", Rating: 2, Review: "Long and dull"},
 		}
 
 		return PresentationsMsg(presentationList)
@@ -14,11 +14,11 @@ func GetPresentations(kitsconId string) tea.Cmd {
 }
 
 type Presentation struct {
-	id        string
-	title     string
-	presenter string
-	rating    int
-	review    string
+	Id        string
+	Title     string
+	Presenter string
+	Rating    int
+	Review    string
 }
 
 type PresentationsMsg []Presentation
