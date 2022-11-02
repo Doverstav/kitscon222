@@ -24,15 +24,6 @@ const (
 	PRESENTATION         View = "PRESENTATION"
 )
 
-type kitsconListItem struct {
-	title       string
-	description string
-}
-
-func (k kitsconListItem) Title() string       { return k.title }
-func (k kitsconListItem) Description() string { return k.description }
-func (k kitsconListItem) FilterValue() string { return k.title }
-
 type presentationListItem struct {
 	title  string
 	rating int
@@ -64,10 +55,18 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		}
 	case commands.KitsconsMsg:
-		m.List.SetItems(KitsconMsgToListItem([]commands.Kitscon(msg)))
+		kitscons := []commands.Kitscon(msg)
+		listItems := make([]list.Item, len(kitscons))
+		for i := range kitscons {
+			listItems[i] = kitscons[i]
+		}
+		m.List.SetItems(listItems)
 		return m, nil
 	case commands.PresentationsMsg:
 		m.List.SetItems(PresentationMsgToListItem([]commands.Presentation(msg)))
+	case commands.KitsconAddedMsg:
+		m.CurrentView = KITSCON_LIST
+		return m, commands.GetKitscons(m.DB)
 	}
 
 	if m.CurrentView == ADD_NEW_KITSCON {
@@ -90,15 +89,6 @@ func (m Model) View() string {
 }
 
 // -------- HELPERS -----------
-func KitsconMsgToListItem(kitscons []commands.Kitscon) []list.Item {
-	listItems := []list.Item{}
-
-	for _, kitscon := range kitscons {
-		listItems = append(listItems, kitsconListItem{title: kitscon.Name, description: kitscon.Description})
-	}
-
-	return listItems
-}
 
 func PresentationMsgToListItem(presentations []commands.Presentation) []list.Item {
 	listItems := []list.Item{}
