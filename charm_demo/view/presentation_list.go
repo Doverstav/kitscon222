@@ -12,7 +12,6 @@ func PresentationListUpdate(m Model, msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		if msg.String() == "a" {
 			// Add new presentation
-			fmt.Print("Add presentation")
 			m.CurrentView = ADD_NEW_PRESENTATION
 			m.PresentationTitleInput.Focus()
 

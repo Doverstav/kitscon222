@@ -17,13 +17,13 @@ import (
 /* TODO:
 - Add nicer keybinds with bubbles components
 - Add nice help message on all screen
+- Support "going back" from screens, all the way to root screen
 - Improve "rating" input to be bounded to 0 - 5 stars
 - Can models be setup in a nicer way? I.e. move
 	state/model into the corresponding view, not
 	having it all in the "main" view
 - Add some nice styling to "Add"-screens
 - Think about edit functionality
-
 */
 
 func main() {

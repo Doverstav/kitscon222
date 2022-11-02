@@ -63,6 +63,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			listItems[i] = kitscons[i]
 		}
 		m.ItemList.SetItems(listItems)
+
 		return m, nil
 	case commands.PresentationsMsg:
 		presentations := []commands.Presentation(msg)
@@ -72,14 +73,19 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		m.CurrentView = PRESENTATION_LIST
 		m.ItemList.SetItems(listItems)
+
 		return m, nil
 	case commands.KitsconAddedMsg:
 		m.CurrentView = KITSCON_LIST
+		m = m.resetAddKitsconViewState()
+
 		return m, commands.GetKitscons(m.DB)
 	case commands.KitsconRemovedMsg:
 		return m, commands.GetKitscons(m.DB)
 	case commands.PresentationAddedMsg:
 		m.CurrentView = PRESENTATION_LIST
+		m = m.resetAddPresentationViewState()
+
 		return m, commands.GetPresentations(m.DB, m.SelectedKitscon.Id)
 	case commands.PresentationRemovedMsg:
 		return m, commands.GetPresentations(m.DB, m.SelectedKitscon.Id)
@@ -87,6 +93,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		selectedKitscon := commands.Kitscon(msg)
 		m.SelectedKitscon = selectedKitscon
 		m.ItemList.Title = fmt.Sprintf("%s presentations", selectedKitscon.Name)
+
 		return m, commands.GetPresentations(m.DB, selectedKitscon.Id)
 	}
 
@@ -115,4 +122,32 @@ func (m Model) View() string {
 	}
 
 	return ""
+}
+
+// -------------- HELPERS -------------------
+
+func (m Model) resetAddPresentationViewState() Model {
+	m.PresentationInputFocus = 0
+
+	m.PresentationTitleInput.SetValue("")
+	m.PresentationTitleInput.Blur()
+	m.PresentationPresenterInput.SetValue("")
+	m.PresentationPresenterInput.Blur()
+	m.PresentationDescriptionInput.SetValue("")
+	m.PresentationDescriptionInput.Blur()
+	m.PresentationRatingInput.SetValue("")
+	m.PresentationRatingInput.Blur()
+	m.PresentationReviewInput.SetValue("")
+	m.PresentationReviewInput.Blur()
+
+	return m
+}
+
+func (m Model) resetAddKitsconViewState() Model {
+	m.KitsconTitleInput.SetValue("")
+	m.KitsconTitleInput.Blur()
+	m.KitsconDescriptionInput.SetValue("")
+	m.KitsconDescriptionInput.Blur()
+
+	return m
 }
