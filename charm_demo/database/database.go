@@ -54,3 +54,16 @@ func SaveItem(db *badger.DB, key string, data []byte) error {
 
 	return nil
 }
+
+func DeleteItem(db *badger.DB, key string) error {
+	err := db.Update(func(txn *badger.Txn) error {
+		err := txn.Delete([]byte(key))
+		return err
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return err
+}
