@@ -15,15 +15,15 @@ import (
 )
 
 /* TODO:
-- Add nicer keybinds with bubbles components
-- Add nice help message on all screen
-- Support "going back" from screens, all the way to root screen
-- Improve "rating" input to be bounded to 0 - 5 stars
-- Can models be setup in a nicer way? I.e. move
+- Add nicer keybinds with bubbles components ##MUST
+- Add nice help message on all screen ##MUST
+- Support "going back" from screens, all the way to root screen ##MUST
+- Improve "rating" input to be bounded to 0 - 5 stars ##NICE TO HAVE
+- Add some nice styling to "Add"-screens ##NICE TO HAVE
+- Can models be setup in a nicer way? I.e. move ##IF TIME PERMITS
 	state/model into the corresponding view, not
 	having it all in the "main" view
-- Add some nice styling to "Add"-screens
-- Think about edit functionality
+- Think about edit functionality ##IF TIME PERMITS
 */
 
 func main() {
