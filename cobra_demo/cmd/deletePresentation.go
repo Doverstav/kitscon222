@@ -23,7 +23,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		confName := cmd.Flag("conf").Value.String()
+		confName := cmd.Flag("conference").Value.String()
 		presName := cmd.Flag("presentation").Value.String()
 
 		fmt.Println("deletePresentation called")
@@ -46,8 +46,8 @@ to quickly create a Cobra application.`,
 func init() {
 	deleteCmd.AddCommand(deletePresentationCmd)
 
-	deletePresentationCmd.Flags().StringP("conf", "c", "", "Conference during which the presentation was held")
-	deletePresentationCmd.MarkFlagRequired("conf")
+	deletePresentationCmd.Flags().StringP("conference", "c", "", "Conference during which the presentation was held")
+	deletePresentationCmd.MarkFlagRequired("conference")
 	deletePresentationCmd.Flags().StringP("presentation", "p", "", "Presentation you wish to delete")
 	deletePresentationCmd.MarkFlagRequired("presentation")
 }
