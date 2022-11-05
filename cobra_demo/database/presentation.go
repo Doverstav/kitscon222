@@ -108,5 +108,46 @@ func SavePresentation(db *badger.DB, kitsconId uuid.UUID, title string, presente
 	}
 
 	return nil
+}
+
+func RemovePresentation(db *badger.DB, kitsconId uuid.UUID, presentationToRemove uuid.UUID) error {
+	// Remove presentation
+	err := DeleteItem(db, presentationToRemove.String())
+	if err != nil {
+		fmt.Printf("Error when deleting presentation %s: %v", presentationToRemove.String(), err)
+		return err
+	}
+
+	// Get parent KitsCon, remove presentation from it
+	var kitscon Kitscon
+	err = GetItem(db, kitsconId.String(), &kitscon)
+	if err != nil {
+		fmt.Printf("Failed to fetch kitscon %s: %v", kitsconId.String(), err)
+		return err
+	}
+
+	// Filter presentation ids
+	filteredPresentationIds := []uuid.UUID{}
+	for _, presentationId := range kitscon.PresentationIds {
+		if presentationId != presentationToRemove {
+			filteredPresentationIds = append(filteredPresentationIds, presentationId)
+		}
+	}
+
+	kitscon.PresentationIds = filteredPresentationIds
+	marshalled, err := json.Marshal(kitscon)
+	if err != nil {
+		fmt.Printf("Error when marshalling %v: %v", kitscon, err)
+		return err
+	}
+
+	// Update KitsCon in database
+	err = SaveItem(db, kitsconId.String(), marshalled)
+	if err != nil {
+		fmt.Printf("Error when saving %v: %v", kitscon, err)
+		return err
+	}
+
+	return nil
 
 }

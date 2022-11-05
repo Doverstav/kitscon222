@@ -99,5 +99,52 @@ func SaveKitscon(db *badger.DB, name string, description string) error {
 	}
 
 	return nil
+}
 
+func DeleteKitscon(db *badger.DB, kitsconToRemove uuid.UUID, presentations []uuid.UUID) error {
+	// Remove presentation under kitscon
+	for _, presentationId := range presentations {
+		err := DeleteItem(db, presentationId.String())
+		if err != nil {
+			fmt.Printf("Failed to delete presentation %s: %v", presentationId.String(), err)
+		}
+	}
+
+	// Delete actual kitscon
+	err := DeleteItem(db, kitsconToRemove.String())
+	if err != nil {
+		fmt.Printf("Could not delete kitscon %s: %v", kitsconToRemove.String(), err)
+		return err
+	}
+
+	// Get list of KitsCons
+	var kitscons KitsconList
+	err = GetItem(db, "kitscons", &kitscons)
+	if errors.Is(err, badger.ErrKeyNotFound) {
+		kitscons.Kitscons = []uuid.UUID{}
+	}
+
+	// Remove deleted kitscon from it
+	filteredKitscons := []uuid.UUID{}
+	for _, kitsconId := range kitscons.Kitscons {
+		if kitsconId != kitsconToRemove {
+			filteredKitscons = append(filteredKitscons, kitsconId)
+		}
+	}
+	kitscons.Kitscons = filteredKitscons
+
+	marshalled, err := json.Marshal(kitscons)
+	if err != nil {
+		fmt.Printf("Error when marshalling %v: %v", kitscons, err)
+		return err
+	}
+
+	// Update list in database
+	err = SaveItem(db, "kitscons", marshalled)
+	if err != nil {
+		fmt.Printf("Error when saving %v: %v", kitscons, err)
+		return err
+	}
+
+	return nil
 }
