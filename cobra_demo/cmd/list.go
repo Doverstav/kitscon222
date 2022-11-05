@@ -27,7 +27,7 @@ to quickly create a Cobra application.`,
 		toPrint := ""
 
 		for _, kitscon := range kitscons {
-			toPrint += fmt.Sprintf("### %s ###\n%s\n", kitscon.Name, kitscon.Desc)
+			toPrint += fmt.Sprintf("=== %s ===\n%s\n", kitscon.Name, kitscon.Desc)
 			if len(kitscon.PresentationIds) == 0 {
 				toPrint += "\n\tNo presentations added\n"
 			}

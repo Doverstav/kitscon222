@@ -38,7 +38,7 @@ to quickly create a Cobra application.`,
 			os.Exit(1)
 		}
 
-		toPrint := ""
+		toPrint := fmt.Sprintf("=== %s presentations ===\n\n", parentKitscon.Name)
 		for _, presentation := range presentations {
 			toPrint += fmt.Sprintf("### %s by %s ###\n%s\n%s\n%s\n\n",
 				presentation.PresentationTitle,

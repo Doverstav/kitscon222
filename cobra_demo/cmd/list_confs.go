@@ -26,7 +26,7 @@ to quickly create a Cobra application.`,
 
 		toPrint := ""
 		for _, kitscon := range kitscons {
-			toPrint += fmt.Sprintf("### %s ###\n%s\n\n", kitscon.Name, kitscon.Desc)
+			toPrint += fmt.Sprintf("=== %s ===\n%s\n\n", kitscon.Name, kitscon.Desc)
 		}
 
 		fmt.Println(toPrint)
