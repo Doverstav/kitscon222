@@ -101,8 +101,17 @@ func SaveKitscon(db *badger.DB, name string, description string) tea.Cmd {
 	}
 }
 
-func DeleteKitscon(db *badger.DB, kitsconToRemove uuid.UUID) tea.Cmd {
+func DeleteKitscon(db *badger.DB, kitsconToRemove uuid.UUID, presentations []uuid.UUID) tea.Cmd {
 	return func() tea.Msg {
+		// Remove presentation under kitscon
+		for _, presentationId := range presentations {
+			err := database.DeleteItem(db, presentationId.String())
+			if err != nil {
+				fmt.Printf("Failed to delete presentation %s: %v", presentationId.String(), err)
+			}
+		}
+
+		// Remove actual kitscon
 		err := database.DeleteItem(db, kitsconToRemove.String())
 		if err != nil {
 			fmt.Printf("Could not delete kitscon %s: %v", kitsconToRemove.String(), err)

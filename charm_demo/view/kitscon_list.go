@@ -14,7 +14,7 @@ func KitsConListUpdate(m Model, msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, nil
 		} else if msg.String() == "d" {
 			selectedKitscon, _ := m.ItemList.SelectedItem().(commands.Kitscon)
-			return m, commands.DeleteKitscon(m.DB, selectedKitscon.Id)
+			return m, commands.DeleteKitscon(m.DB, selectedKitscon.Id, selectedKitscon.PresentationIds)
 		} else if msg.Type == tea.KeyEnter {
 			selectedKitscon, _ := m.ItemList.SelectedItem().(commands.Kitscon)
 			return m, commands.KitsconSelected(selectedKitscon)
