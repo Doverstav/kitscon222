@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/doverstav/kitscon222/cobra_demo/database"
 	"github.com/spf13/cobra"
 )
@@ -29,15 +30,33 @@ to quickly create a Cobra application.`,
 		presTitle := ""
 		if len(args) >= 1 {
 			presTitle = args[0]
+		} else {
+			survey.AskOne(&survey.Input{
+				Message: "Title:",
+			}, &presTitle)
+			fmt.Println(presTitle)
 		}
+
 		presPresenter := ""
 		if len(args) >= 2 {
 			presPresenter = args[1]
+		} else {
+			survey.AskOne(&survey.Input{
+				Message: "Presenter:",
+			}, &presPresenter)
+			fmt.Println(presPresenter)
 		}
+
 		presDesc := ""
 		if len(args) >= 3 {
 			presDesc = args[2]
+		} else {
+			survey.AskOne(&survey.Input{
+				Message: "Description:",
+			}, &presDesc)
+			fmt.Println(presDesc)
 		}
+
 		presRating := 0
 		if len(args) >= 4 {
 			var err error
@@ -46,10 +65,21 @@ to quickly create a Cobra application.`,
 				fmt.Printf("Could not convert rating: %v", err)
 				os.Exit(1)
 			}
+		} else {
+			survey.AskOne(&survey.Input{
+				Message: "Rating (any positive number):",
+			}, &presRating)
+			fmt.Println(presRating)
 		}
+
 		presReview := ""
 		if len(args) >= 5 {
 			presReview = args[4]
+		} else {
+			survey.AskOne(&survey.Input{
+				Message: "Review:",
+			}, &presReview)
+			fmt.Println(presReview)
 		}
 
 		parentKitscon, err := database.GetKitsconByName(db, confName)
