@@ -16,13 +16,9 @@ import (
 var listPresentationsCmd = &cobra.Command{
 	Aliases: []string{"p", "pres"},
 	Use:     "presentations",
-	Short:   "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short:   "List all presentations under a KitsCon",
+	Long: `Given a conference name, will list all 
+presentations that you have added under that KitsCon.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		confName := cmd.Flag("conference").Value.String()
 

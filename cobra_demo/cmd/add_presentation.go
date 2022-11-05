@@ -17,13 +17,13 @@ import (
 var addPresentationCmd = &cobra.Command{
 	Aliases: []string{"p", "pres"},
 	Use:     "presentation",
-	Short:   "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short:   "Add presentation under a KitsCon",
+	Long: `Given a conference name, will add a presentation 
+under that conference.
+	
+Accepts title, presenter, description, rating & review as arguments. 
+If some or all of these are missing, the missing arguments will be 
+prompted for.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		confName := cmd.Flag("conference").Value.String()
 

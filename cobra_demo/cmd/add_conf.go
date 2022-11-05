@@ -16,13 +16,12 @@ import (
 var addConfCmd = &cobra.Command{
 	Aliases: []string{"c", "conf"},
 	Use:     "conference",
-	Short:   "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short:   "Add a conference",
+	Long: `Will add a new conference.
+	
+Takes conference name and description as arguments. If 
+some or all are missing, the missing arguments will be 
+prompted for`,
 	Run: func(cmd *cobra.Command, args []string) {
 		confName := ""
 		if len(args) >= 1 {
