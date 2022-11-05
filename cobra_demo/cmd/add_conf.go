@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/doverstav/kitscon222/cobra_demo/database"
 	"github.com/spf13/cobra"
 )
@@ -26,11 +27,21 @@ to quickly create a Cobra application.`,
 		confName := ""
 		if len(args) >= 1 {
 			confName = args[0]
-		} // else prompt for input
+		} else {
+			survey.AskOne(&survey.Input{
+				Message: "Name:",
+			}, &confName)
+			fmt.Println(confName)
+		}
 		confDesc := ""
 		if len(args) >= 2 {
 			confDesc = args[1]
-		} // else prompt for input
+		} else {
+			survey.AskOne(&survey.Input{
+				Message: "Description",
+			}, &confDesc)
+			fmt.Println(confDesc)
+		}
 
 		err := database.SaveKitscon(db, confName, confDesc)
 		if err != nil {
