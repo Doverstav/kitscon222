@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/doverstav/kitscon222/cobra_demo/database"
@@ -25,7 +26,17 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		confName := cmd.Flag("conf").Value.String()
 
-		presentations := database.GetPresentations(db, confName)
+		parentKitscon, err := database.GetKitsconByName(db, confName)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		presentations, err := database.GetPresentations(db, parentKitscon.Id)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 
 		toPrint := ""
 		for _, presentation := range presentations {

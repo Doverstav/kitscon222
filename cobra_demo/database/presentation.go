@@ -8,6 +8,12 @@ import (
 	"github.com/google/uuid"
 )
 
+type ErrNoSuchPresentation struct{}
+
+func (e *ErrNoSuchPresentation) Error() string {
+	return "No such presentation"
+}
+
 type Presentation struct {
 	Id                uuid.UUID `json:"id"`
 	PresentationTitle string    `json:"title"`
@@ -17,22 +23,44 @@ type Presentation struct {
 	Review            string    `json:"review"`
 }
 
-func GetPresentations(db *badger.DB, kitsconName string) []Presentation {
-	kitscons := GetKitscons(db)
-
+func GetPresentations(db *badger.DB, kitsconId uuid.UUID) ([]Presentation, error) {
+	var kitscon Kitscon
 	presentations := []Presentation{}
-	for _, kitscon := range kitscons {
-		// TODO This will amthc several times in case of duped names. Is this a problem?
-		if kitscon.Name == kitsconName {
-			for _, id := range kitscon.PresentationIds {
-				var tempPres Presentation
-				GetItem(db, id.String(), &tempPres)
-				presentations = append(presentations, tempPres)
-			}
+	err := GetItem(db, kitsconId.String(), &kitscon)
+	if err != nil {
+		fmt.Printf("Error getting kitscon %s: %v", kitsconId.String(), err)
+		return []Presentation{}, err
+	}
+
+	for _, id := range kitscon.PresentationIds {
+		var tempPres Presentation
+		err := GetItem(db, id.String(), &tempPres)
+		if err != nil {
+			fmt.Printf("Error getting presentations %s: %v\n", id.String(), err)
+		}
+
+		presentations = append(presentations, tempPres)
+	}
+
+	return presentations, nil
+}
+
+func GetPresentationByName(db *badger.DB, kitsconId uuid.UUID, presentationName string) (Presentation, error) {
+	var kitscon Kitscon
+	err := GetItem(db, kitsconId.String(), &kitscon)
+	if err != nil {
+		return Presentation{}, err
+	}
+
+	for _, presId := range kitscon.PresentationIds {
+		var tempPres Presentation
+		GetItem(db, presId.String(), &tempPres)
+		if tempPres.PresentationTitle == presentationName {
+			return tempPres, nil
 		}
 	}
 
-	return presentations
+	return Presentation{}, &ErrNoSuchPresentation{}
 }
 
 func SavePresentation(db *badger.DB, kitsconId uuid.UUID, title string, presenter string, description string, rating int, review string) error {
