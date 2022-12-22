@@ -1,6 +1,6 @@
 # KitsCon 22.2 Demo
 
-This repo contains the exploratory results of looking into Charm/Bubbletea and Cobra in preparation for my KitsCon 22.2 presentation, along with the end results of the live coding done during the presentation and the demoscript and presentation.
+This repo contains the exploratory results of looking into [Charm/Bubbletea](https://github.com/charmbracelet/bubbletea) and [Cobra](https://cobra.dev/) in preparation for my KitsCon 22.2 presentation, along with the end results of the live coding done during the presentation and the demoscript and presentation.
 
 In `/charm_demo` and `/cobra_demo` are the playgrounds where I tested out Cobra and Charm/Bubbletea.
 
