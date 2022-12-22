@@ -8,8 +8,6 @@ In `/livecoding` are the results of the live coding done during the presentation
 
 In `/docs` is the demo script which lays out how to do the live coding and the slides (in swedish) that were shown during the presentation. 
 
-To make demoing easier, these demos should use the same storage so data can be shared. Maybe create some files on the users computer? These can then be read from disk and saved into maps/dictionaries, which should make it easy to get data in a relational-ish way.
-
 Data is stored using [badgerDB](https://github.com/dgraph-io/badger).
 
 Database "design":
